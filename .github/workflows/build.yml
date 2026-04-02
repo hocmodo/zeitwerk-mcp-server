@@ -39,7 +39,7 @@ jobs:
         id: package
 
       - name: Upload MCPB artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           # NOTE: GitHub wraps artifacts in an outer zip on download.
           # Extract that zip first to obtain the .mcpb file, then install it in Claude.
