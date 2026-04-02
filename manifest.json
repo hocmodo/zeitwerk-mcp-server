@@ -1,0 +1,119 @@
+{
+  "manifest_version": "0.3",
+  "name": "zeitwerk-mcp-server",
+  "display_name": "Zeitwerk — Time Tracking & Invoicing",
+  "version": "1.0.0",
+  "description": "MCP server bridging Claude Desktop to the Zeitwerk local HTTP API",
+  "long_description": "Zeitwerk is a time tracking and invoicing app for freelancers. This extension connects Claude Desktop directly to the Zeitwerk app running on your machine, letting you log hours, manage projects and customers, generate earnings reports, and create invoices — entirely through natural language, without ever leaving your conversation.\n\nAll data stays on your device. The extension communicates exclusively with the Zeitwerk local API on 127.0.0.1:27432; nothing is sent to any external server.",
+  "keywords": ["time tracking", "invoicing", "freelance", "billing", "zeitwerk", "productivity", "finance"],
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "512": "icons/icon-512.png"
+  },
+  "author": {
+    "name": "Joost Evertse",
+    "email": "joost.evertse@hocmodo.nl",
+    "url": "https://www.hocmodo.nl"
+  },
+  "homepage": "https://www.hocmodo.nl",
+  "privacy_policies": ["https://www.hocmodo.nl/zeitwerk-mcp-privacy/"],
+  "server": {
+    "type": "node",
+    "entry_point": "index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/index.js"
+      ],
+      "env": {
+         "TOKEN": "${user_config.token}"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "get_status",
+      "description": "Get a dashboard summary: today's hours, this week's hours, this month's hours and earnings, and outstanding invoice totals."
+    },
+    {
+      "name": "get_customers",
+      "description": "List all active customers."
+    },
+    {
+      "name": "create_customer",
+      "description": "Create a new customer."
+    },
+    {
+      "name": "update_customer",
+      "description": "Update an existing customer. Only supply the fields you want to change."
+    },
+    {
+      "name": "get_projects",
+      "description": "List all active projects. Optionally filter by customer_id."
+    },
+    {
+      "name": "create_project",
+      "description": "Create a new project for a customer."
+    },
+    {
+      "name": "update_project",
+      "description": "Update an existing project. Only supply the fields you want to change."
+    },
+    {
+      "name": "get_time_entries",
+      "description": "Get time entries for a date range. Returns hours, description, project, customer, and amount per entry."
+    },
+    {
+      "name": "create_time_entry",
+      "description": "Log a new time entry."
+    },
+    {
+      "name": "update_time_entry",
+      "description": "Update an existing time entry's hours or description."
+    },
+    {
+      "name": "delete_time_entry",
+      "description": "Soft-delete a time entry."
+    },
+    {
+      "name": "get_invoices",
+      "description": "List invoices. Optionally filter by status: 'unpaid' or 'paid'."
+    },
+    {
+      "name": "create_invoice",
+      "description": "Create a new invoice with line items."
+    },
+    {
+      "name": "update_invoice",
+      "description": "Update an invoice — typically to mark it as paid."
+    },
+    {
+      "name": "get_invoice_pdf",
+      "description": "Download an invoice as a PDF. Returns the local file path where the PDF was saved."
+    },
+    {
+      "name": "import_time_entries",
+      "description": "Import time entries from an Excel (.xlsx, .xls) or CSV (.csv) file. All entries are assigned to the specified project."
+    }
+  ],
+  "user_config": {
+    "token": {
+      "type": "string",
+      "title": "Zeitwerk API Token",
+      "description": "Your personal Zeitwerk API token",
+      "required": true,
+      "sensitive": true
+    }
+  },
+  "compatibility": {
+    "platforms": ["darwin", "win32"],
+    "runtimes": { "node": ">=18" },
+    "clients": { "claude_desktop": ">=1.0.0" }
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hocmodo/zeitwerk-plugin"
+  }
+}

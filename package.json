@@ -1,0 +1,12 @@
+{
+  "name": "zeitwerk-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server bridging Claude Cowork to the Zeitwerk local HTTP API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
