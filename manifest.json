@@ -7,9 +7,9 @@
   "long_description": "Zeitwerk is a time tracking and invoicing app for freelancers. This extension connects Claude Desktop directly to the Zeitwerk app running on your machine, letting you log hours, manage projects and customers, generate earnings reports, and create invoices — entirely through natural language, without ever leaving your conversation.\n\nAll data stays on your device. The extension communicates exclusively with the Zeitwerk local API on 127.0.0.1:27432; nothing is sent to any external server.",
   "keywords": ["time tracking", "invoicing", "freelance", "billing", "zeitwerk", "productivity", "finance"],
   "icons": [
-    { "size": 16, "path": "icons/icon-16.png" },
-    { "size": 32, "path": "icons/icon-32.png" },
-    { "size": 512, "path": "icons/icon-512.png" }
+    { "src": "icons/icon-16.png", "size": "16x16" },
+    { "src": "icons/icon-32.png", "size": "32x32" },
+    { "src": "icons/icon-512.png", "size": "512x512" }
   ],
   "author": {
     "name": "Joost Evertse",
@@ -107,6 +107,7 @@
     }
   },
   "compatibility": {
+    "claude_desktop": ">=0.10.0",
     "platforms": ["darwin"],
     "runtimes": { "node": ">=18" }
   },
