@@ -25,16 +25,25 @@ jobs:
 
       - name: Build MCPB package
         run: |
-          zip -r zeitwerk-mcp-server-${{ steps.version.outputs.version }}.mcpb \
-            manifest.json \
-            index.js \
-            package.json \
-            package-lock.json \
-            icons/
+          PACKAGE="zeitwerk-mcp-server-${{ steps.version.outputs.version }}.mcpb"
+          mkdir -p dist
+          cp manifest.json index.js package.json package-lock.json dist/
+          cp -r icons dist/
+          (cd dist && zip -r "../${PACKAGE}" .)
+          echo "Verifying zip structure:"
+          unzip -l "${PACKAGE}"
+          if ! unzip -p "${PACKAGE}" manifest.json > /dev/null 2>&1; then
+            echo "ERROR: manifest.json not found at root of zip" && exit 1
+          fi
+          echo "mcpb_file=${PACKAGE}" >> "$GITHUB_OUTPUT"
+        id: package
 
       - name: Upload MCPB artifact
         uses: actions/upload-artifact@v4
         with:
+          # NOTE: GitHub wraps artifacts in an outer zip on download.
+          # Extract that zip first to obtain the .mcpb file, then install it in Claude.
+          # For a direct (unwrapped) download, use a tagged release instead.
           name: zeitwerk-mcp-server-${{ steps.version.outputs.version }}.mcpb
           path: zeitwerk-mcp-server-${{ steps.version.outputs.version }}.mcpb
           retention-days: 30
@@ -58,12 +67,16 @@ jobs:
 
       - name: Build MCPB package
         run: |
-          zip -r zeitwerk-mcp-server-${{ steps.version.outputs.version }}.mcpb \
-            manifest.json \
-            index.js \
-            package.json \
-            package-lock.json \
-            icons/
+          PACKAGE="zeitwerk-mcp-server-${{ steps.version.outputs.version }}.mcpb"
+          mkdir -p dist
+          cp manifest.json index.js package.json package-lock.json dist/
+          cp -r icons dist/
+          (cd dist && zip -r "../${PACKAGE}" .)
+          echo "Verifying zip structure:"
+          unzip -l "${PACKAGE}"
+          if ! unzip -p "${PACKAGE}" manifest.json > /dev/null 2>&1; then
+            echo "ERROR: manifest.json not found at root of zip" && exit 1
+          fi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
