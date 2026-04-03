@@ -65,26 +65,40 @@ Or install manually by adding the following to your `claude_desktop_config.json`
 
 ## Examples
 
-**Log time**
-> "Log 3 hours on the Acme Corp website project — reviewed pull requests"
+### Example 1: Log time
+**User prompt:** "Log 3 hours on the Acme Solutions Cloud Migration project — reviewed pull requests"
 
-**Get a report**
-> "Show me a timesheet for last week"
-> "How much did I earn from Beta Labs this month?"
+**Expected behavior:**
+- Extension looks up the matching customer and project
+- Creates a time entry with the given duration and description
+- Confirms the entry with date, hours, and project name
 
-**Create an invoice**
-> "Create an invoice for Acme Corp for all unbilled time in March 2026"
+### Example 2: Get an earnings report
+**User prompt:** "How much did I earn from Cascade Partners this month?"
 
-**Check your status**
-> "What does my dashboard look like?"
-> "Do I have any overdue invoices?"
+**Expected behavior:**
+- Extension fetches time entries for the current month filtered to Cascade Partners
+- Calculates total hours and earnings based on the project rate
+- Returns summary with a per-project breakdown
 
-**Manage projects**
-> "Add a new project called 'Mobile App v2' for Beta Labs at €120/hour"
-> "Update the rate for the Website Redesign project to €150/hour"
+### Example 3: Create an invoice
+**User prompt:** "Create an invoice for Blue Ridge Consulting for all unbilled time in March 2026"
 
-**Import time entries**
-> "Import the time entries from /Users/me/Downloads/march-time.xlsx into the Acme Corp website project"
+**Expected behavior:**
+- Look up Blue Ridge Consulting customer ID
+- Fetch unbilled time entries for March 2026
+- Show draft invoice summary for confirmation
+- Create invoice in Zeitwerk
+
+### Example 4: Import time entries from a file
+**User prompt:** "Can you import the excel sheets from the working folder into the Marketing project for Acme Corp in Zeitwerk?"
+
+**Expected behavior:**
+- Extension reads the Excel file at the given path
+- Looks up Acme Corp and Marketing project in Zeitwerk
+- Parses time entries from excel sheet for verifying import afterwards
+- Import time entries into Zeitwerk by sending excel sheet to Zeitwerk
+- Reports how many entries were imported, verify them and flags any rows it could not parse
 
 ## Privacy
 
