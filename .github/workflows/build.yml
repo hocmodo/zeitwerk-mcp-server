@@ -14,6 +14,8 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
 
     steps:
       - name: Checkout repository
@@ -58,28 +60,13 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Read version from manifest
-        id: version
-        run: echo "version=$(node -p "require('./manifest.json').version")" >> "$GITHUB_OUTPUT"
-
-      - name: Build MCPB package
-        run: |
-          PACKAGE="zeitwerk-mcp-server-${{ steps.version.outputs.version }}.mcpb"
-          mkdir -p dist
-          cp manifest.json index.js package.json package-lock.json dist/
-          cp -r icons dist/
-          (cd dist && zip -r "../${PACKAGE}" .)
-          echo "Verifying zip structure:"
-          unzip -l "${PACKAGE}"
-          if ! unzip -p "${PACKAGE}" manifest.json > /dev/null 2>&1; then
-            echo "ERROR: manifest.json not found at root of zip" && exit 1
-          fi
+      - name: Download MCPB artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: zeitwerk-mcp-server-${{ needs.build.outputs.version }}.mcpb
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: zeitwerk-mcp-server-${{ steps.version.outputs.version }}.mcpb
+          files: zeitwerk-mcp-server-${{ needs.build.outputs.version }}.mcpb
           generate_release_notes: true
