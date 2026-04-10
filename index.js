@@ -135,6 +135,25 @@ function apiRequestMultipart(urlPath, fields, filePath) {
 
 const TOOLS = [
   {
+    name: "start_timer",
+    description: "Start the in-app timer for a project. Returns 409 if the timer is already running.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        project_id:  { type: "string", description: "Project ID to track time against" },
+        description: { type: "string", description: "What you're working on (optional)" },
+      },
+      required: ["project_id"],
+    },
+    annotations: { title: "Start Timer", destructiveHint: false, openWorldHint: false },
+  },
+  {
+    name: "stop_timer",
+    description: "Stop the running timer and save the elapsed time as a time entry. Returns a message if no timer was running.",
+    inputSchema: { type: "object", properties: {}, required: [] },
+    annotations: { title: "Stop Timer", destructiveHint: false, openWorldHint: false },
+  },
+  {
     name: "get_status",
     description: "Get a dashboard summary: today's hours, this week's hours, this month's hours and earnings, and outstanding invoice totals.",
     inputSchema: { type: "object", properties: {}, required: [] },
@@ -357,6 +376,12 @@ async function callTool(name, args) {
   let result;
 
   switch (name) {
+    case "start_timer":
+      result = await apiRequest("POST", "/timer/start", { ...args, project_id: parseInt(args.project_id, 10) });
+      break;
+    case "stop_timer":
+      result = await apiRequest("POST", "/timer/stop");
+      break;
     case "get_status":
       result = await apiRequest("GET", "/status");
       break;

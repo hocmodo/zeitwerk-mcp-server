@@ -7,6 +7,7 @@ This extension connects Claude Desktop to [Zeitwerk](http://www.hocmodo.nl), a p
 
 ## Features
 
+- **Timer control** — Start and stop the in-app timer through natural language ("start the timer on Website Redesign")
 - **Time logging** — Log hours in natural language ("2.5h on Website Redesign — fixed nav bug")
 - **Reporting** — Get timesheet and earnings summaries by day, week, month, or custom range
 - **Invoicing** — Draft, confirm, and create invoices from unbilled time; mark invoices as paid; download PDFs
@@ -46,6 +47,8 @@ Or install manually by adding the following to your `claude_desktop_config.json`
 
 | Tool | Description |
 |---|---|
+| `start_timer` | Start the in-app timer for a project |
+| `stop_timer` | Stop the running timer and save the elapsed time as a time entry |
 | `get_status` | Dashboard summary: hours today/week/month, outstanding invoices |
 | `get_customers` | List all active customers |
 | `create_customer` | Create a new customer |
@@ -65,7 +68,22 @@ Or install manually by adding the following to your `claude_desktop_config.json`
 
 ## Examples
 
-### Example 1: Log time
+### Example 1: Start the timer
+**User prompt:** "Start the timer on the Acme Corp Website Redesign project — working on dark mode"
+
+**Expected behavior:**
+- Extension looks up the matching customer and project
+- Starts the in-app Zeitwerk timer for that project with the given description
+- Confirms the timer is running with the start time
+
+### Example 2: Stop the timer
+**User prompt:** "Stop the timer"
+
+**Expected behavior:**
+- Extension stops the running Zeitwerk timer
+- Reports the saved time entry including hours elapsed and project name
+
+### Example 3: Log time (manual)
 **User prompt:** "Log 3 hours on the Acme Solutions Cloud Migration project — reviewed pull requests"
 
 **Expected behavior:**
@@ -73,7 +91,7 @@ Or install manually by adding the following to your `claude_desktop_config.json`
 - Creates a time entry with the given duration and description
 - Confirms the entry with date, hours, and project name
 
-### Example 2: Get an earnings report
+### Example 4: Get an earnings report
 **User prompt:** "How much did I earn from Cascade Partners this month?"
 
 **Expected behavior:**
@@ -81,7 +99,7 @@ Or install manually by adding the following to your `claude_desktop_config.json`
 - Calculates total hours and earnings based on the project rate
 - Returns summary with a per-project breakdown
 
-### Example 3: Create an invoice
+### Example 5: Create an invoice
 **User prompt:** "Create an invoice for Blue Ridge Consulting for all unbilled time in March 2026"
 
 **Expected behavior:**
@@ -90,7 +108,7 @@ Or install manually by adding the following to your `claude_desktop_config.json`
 - Show draft invoice summary for confirmation
 - Create invoice in Zeitwerk
 
-### Example 4: Import time entries from a file
+### Example 6: Import time entries from a file
 **User prompt:** "Can you import the excel sheets from the working folder into the Marketing project for Acme Corp in Zeitwerk?"
 
 **Expected behavior:**
