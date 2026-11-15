@@ -66,7 +66,7 @@ jobs:
           name: zeitwerk-mcp-server-${{ needs.build.outputs.version }}.mcpb
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: zeitwerk-mcp-server-${{ needs.build.outputs.version }}.mcpb
           generate_release_notes: true
