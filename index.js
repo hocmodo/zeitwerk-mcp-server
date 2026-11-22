@@ -293,14 +293,29 @@ const TOOLS = [
   },
   {
     name: "get_invoices",
-    description: "List invoices. Optionally filter by status: 'unpaid' or 'paid'.",
+    description: "List invoices without their line items. Each has subject, paid_date (when paid) and an overdue flag. Optionally filter by status ('unpaid', 'paid', or 'overdue' = unpaid and past the due date), customer, and invoice-date range.",
     inputSchema: {
       type: "object",
       properties: {
-        status: { type: "string", enum: ["unpaid", "paid"], description: "Filter by status (optional)" },
+        status:      { type: "string", enum: ["unpaid", "paid", "overdue"], description: "Filter by status (optional)" },
+        customer_id: { type: "string", description: "Only invoices for this customer (optional)" },
+        from:        { type: "string", description: "Invoice date on or after, YYYY-MM-DD (optional)" },
+        to:          { type: "string", description: "Invoice date on or before, YYYY-MM-DD (optional)" },
       },
     },
     annotations: { title: "Get Invoices", readOnlyHint: true, openWorldHint: false },
+  },
+  {
+    name: "get_invoice",
+    description: "Get one invoice including its line items (project name, hours, rate, amount, description).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        id: { type: "string", description: "Invoice ID" },
+      },
+      required: ["id"],
+    },
+    annotations: { title: "Get Invoice", readOnlyHint: true, openWorldHint: false },
   },
   {
     name: "create_invoice",
@@ -314,6 +329,7 @@ const TOOLS = [
         invoice_date:         { type: "string", description: "YYYY-MM-DD" },
         due_date:             { type: "string", description: "YYYY-MM-DD" },
         tax:                  { type: "number", description: "VAT percentage (e.g. 21.0)" },
+        subject:              { type: "string", description: "Optional line printed under the customer's address, e.g. a PO number or project reference" },
         line_items: {
           type: "array",
           items: {
@@ -323,6 +339,7 @@ const TOOLS = [
               hours:      { type: "number" },
               rate:       { type: "number" },
               amount:     { type: "number" },
+              description: { type: "string", description: "Optional line text printed instead of the project name, e.g. 'Development, March 2026'" },
             },
             required: ["project_id", "hours", "rate"],
           },
@@ -334,16 +351,29 @@ const TOOLS = [
   },
   {
     name: "update_invoice",
-    description: "Update an invoice — typically to mark it as paid.",
+    description: "Mark an invoice as paid (optionally on a given date) or back to unpaid. Dates, tax and line items can't be changed; delete and recreate the invoice instead.",
     inputSchema: {
       type: "object",
       properties: {
-        id:     { type: "string", description: "Invoice ID" },
-        status: { type: "string", enum: ["unpaid", "paid"] },
+        id:        { type: "string", description: "Invoice ID" },
+        status:    { type: "string", enum: ["unpaid", "paid"] },
+        paid_date: { type: "string", description: "Day the payment was received, YYYY-MM-DD (optional, default today; only with status 'paid')" },
       },
       required: ["id", "status"],
     },
     annotations: { title: "Update Invoice", destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  },
+  {
+    name: "delete_invoice",
+    description: "Delete an invoice and its line items. Confirm with the user first.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        id: { type: "string", description: "Invoice ID" },
+      },
+      required: ["id"],
+    },
+    annotations: { title: "Delete Invoice", destructiveHint: true, idempotentHint: true, openWorldHint: false },
   },
   {
     name: "get_invoice_pdf",
@@ -429,10 +459,20 @@ async function callTool(name, args) {
       result = await apiRequest("DELETE", `/time-entries/${args.id}`);
       break;
     case "get_invoices": {
-      const qs = args.status ? `?status=${args.status}` : "";
-      result = await apiRequest("GET", `/invoices${qs}`);
+      const params = new URLSearchParams();
+      for (const key of ["status", "customer_id", "from", "to"]) {
+        if (args[key]) params.set(key, args[key]);
+      }
+      const qs = params.toString();
+      result = await apiRequest("GET", `/invoices${qs ? `?${qs}` : ""}`);
       break;
     }
+    case "get_invoice":
+      result = await apiRequest("GET", `/invoices/${encodeURIComponent(args.id)}`);
+      break;
+    case "delete_invoice":
+      result = await apiRequest("DELETE", `/invoices/${encodeURIComponent(args.id)}`);
+      break;
     case "create_invoice": {
       const invoiceArgs = {
         ...args,
@@ -491,7 +531,7 @@ rl.on("line", async (line) => {
       send({ jsonrpc: "2.0", id, result: {
         protocolVersion: "2025-11-25",
         capabilities: { tools: {} },
-        serverInfo: { name: "zeitwerk", version: "1.0.0" },
+        serverInfo: { name: "zeitwerk", version: "1.1.0" },
       }});
     } else if (method === "tools/list") {
       send({ jsonrpc: "2.0", id, result: { tools: TOOLS } });

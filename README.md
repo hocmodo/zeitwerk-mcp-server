@@ -60,9 +60,11 @@ Or install manually by adding the following to your `claude_desktop_config.json`
 | `create_time_entry` | Log a new time entry |
 | `update_time_entry` | Edit an existing time entry |
 | `delete_time_entry` | Soft-delete a time entry |
-| `get_invoices` | List invoices, optionally filtered by status |
-| `create_invoice` | Create an invoice with line items |
-| `update_invoice` | Update an invoice (e.g. mark as paid) |
+| `get_invoices` | List invoices, filtered by status (unpaid, paid, overdue), customer or date range |
+| `get_invoice` | One invoice with its line items |
+| `create_invoice` | Create an invoice with line items, an optional subject and line descriptions |
+| `update_invoice` | Mark an invoice as paid (with the payment date) or unpaid |
+| `delete_invoice` | Delete an invoice |
 | `get_invoice_pdf` | Download an invoice PDF to your Downloads folder |
 | `import_time_entries` | Import entries from an Excel or CSV file |
 
