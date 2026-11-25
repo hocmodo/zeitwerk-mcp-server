@@ -2,7 +2,7 @@
   "manifest_version": "0.3",
   "name": "zeitwerk-mcp-server",
   "display_name": "Zeitwerk — Time Tracking & Invoicing",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "MCP server bridging Claude Desktop to the Zeitwerk local HTTP API",
   "long_description": "Zeitwerk is a time tracking and invoicing app for freelancers. This extension connects Claude Desktop directly to the Zeitwerk app running on your machine, letting you log hours, manage projects and customers, generate earnings reports, and create invoices — entirely through natural language, without ever leaving your conversation.\n\nAll data stays on your device. The extension communicates exclusively with the Zeitwerk local API on 127.0.0.1:27432; nothing is sent to any external server.",
   "keywords": ["time tracking", "invoicing", "freelance", "billing", "zeitwerk", "productivity", "finance"],
@@ -78,7 +78,11 @@
     },
     {
       "name": "get_invoices",
-      "description": "List invoices. Optionally filter by status: 'unpaid' or 'paid'."
+      "description": "List invoices, optionally filtered by status (unpaid, paid, overdue), customer and date range."
+    },
+    {
+      "name": "get_invoice",
+      "description": "Get one invoice including its line items."
     },
     {
       "name": "create_invoice",
@@ -86,7 +90,11 @@
     },
     {
       "name": "update_invoice",
-      "description": "Update an invoice — typically to mark it as paid."
+      "description": "Mark an invoice as paid (optionally on a given date) or back to unpaid."
+    },
+    {
+      "name": "delete_invoice",
+      "description": "Delete an invoice and its line items."
     },
     {
       "name": "get_invoice_pdf",
